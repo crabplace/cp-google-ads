@@ -6,9 +6,7 @@ exports.handler = async () => {
   const headers = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' };
   try {
     const accessToken = await getAccessToken();
-
-    // Query customer info directly - works with Explorer access
-    const resp = await fetch('https://googleads.googleapis.com/v17/customers/' + CUSTOMER_ID + '/googleAds:search', {
+    const resp = await fetch('https://googleads.googleapis.com/v20/customers/' + CUSTOMER_ID + '/googleAds:search', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + accessToken,
@@ -18,15 +16,12 @@ exports.handler = async () => {
       },
       body: JSON.stringify({ query: 'SELECT customer.id, customer.descriptive_name, customer.status FROM customer LIMIT 1' })
     });
-
     const text = await resp.text();
     let data;
     try { data = JSON.parse(text); } catch(e) {
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Non-JSON', status: resp.status, raw: text.substring(0, 800) }) };
     }
-
     if (data.error) return { statusCode: 500, headers, body: JSON.stringify({ api_error: data.error }) };
-
     const customer = data.results && data.results[0] && data.results[0].customer;
     return { statusCode: 200, headers, body: JSON.stringify({
       status: 'connected',
