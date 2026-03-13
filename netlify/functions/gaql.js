@@ -1,6 +1,7 @@
 const { getAccessToken } = require('./get-token');
 const CUSTOMER_ID = process.env.GOOGLE_ADS_CUSTOMER_ID;
 const DEV_TOKEN = process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
+const MCC_ID = process.env.GOOGLE_ADS_MCC_ID || '9977638905';
 
 const queryGoogleAds = async (gaql) => {
   const accessToken = await getAccessToken();
@@ -9,7 +10,7 @@ const queryGoogleAds = async (gaql) => {
     headers: {
       'Authorization': 'Bearer ' + accessToken,
       'developer-token': DEV_TOKEN,
-      'login-customer-id': CUSTOMER_ID,
+      'login-customer-id': MCC_ID,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ query: gaql })
