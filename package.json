@@ -1,0 +1,6 @@
+{
+  "name": "cp-google-ads",
+  "version": "1.0.0",
+  "description": "CrabPlace Google Ads API proxy",
+  "engines": { "node": ">=18" }
+}
