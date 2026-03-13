@@ -1,6 +1,7 @@
 const { getAccessToken } = require('./get-token');
 const DEV_TOKEN = process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
 const CUSTOMER_ID = process.env.GOOGLE_ADS_CUSTOMER_ID;
+const MCC_ID = process.env.GOOGLE_ADS_MCC_ID || '9977638905';
 
 exports.handler = async () => {
   const headers = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' };
@@ -11,7 +12,7 @@ exports.handler = async () => {
       headers: {
         'Authorization': 'Bearer ' + accessToken,
         'developer-token': DEV_TOKEN,
-        'login-customer-id': CUSTOMER_ID,
+        'login-customer-id': MCC_ID,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ query: 'SELECT customer.id, customer.descriptive_name, customer.status FROM customer LIMIT 1' })
@@ -19,7 +20,7 @@ exports.handler = async () => {
     const text = await resp.text();
     let data;
     try { data = JSON.parse(text); } catch(e) {
-      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Non-JSON', status: resp.status, raw: text.substring(0, 800) }) };
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Non-JSON', status: resp.status, raw: text.substring(0, 500) }) };
     }
     if (data.error) return { statusCode: 500, headers, body: JSON.stringify({ api_error: data.error }) };
     const customer = data.results && data.results[0] && data.results[0].customer;
